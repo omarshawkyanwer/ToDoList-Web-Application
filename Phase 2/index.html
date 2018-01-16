@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>2DoList</title>
+   <!--Bootstrap-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!--Datepicker-->
+  <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <!--Data Table-->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/dt/dt-1.10.11/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/t/dt/dt-1.10.11/datatables.min.js"></script>
+ 
+     <!--CSS-->
+     <style>
+        #row1 {
+          margin-right: 0px;
+        }
+         .compl {
+           text-decoration: line-through;
+         }
+         table#allTasksTable tr td button { display:none;}
+         table#allTasksTable tr:hover td button { display:inline-block;}
+    </style>
+ 
+</head>
+<body>
+
+<!--Logout Form-->
+<form action='/logout' method="GET" id="logoutForm"></form>
+ 
+<!--Nav Bar-->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+ 
+        <!--Logo-->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">2DoList</a>
+        </div>
+ 
+        <!--Menu Items-->
+        <div class="collapse navbar-collapse" id="mainNavBar">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+            </ul>
+ 
+            <!--Right align list-->
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="nameOfUser"></a></li>
+                <li><a href="#" id="logO">Log out</a></li>
+            </ul>
+        </div>
+ 
+    </div>
+</nav>
+ 
+<div class="row" id="row1">
+    <!--Menu-->
+  <div class="col-md-3" style="padding: 40px">
+      <h2 style="text-align: center;"><b>Tasks Menu</b></h2><br>
+     <button type="button" class="btn btn-primary btn-block btn-lg active mainButtons" id="1Button">All Tasks  <span class="badge" id="alltasksnum">0</span></button>
+     <button type="button" class="btn btn-info btn-block btn-lg mainButtons" id="2Button">In Progress  <span class="badge" id="inprogressnum">0</span></button>
+     <button type="button" class="btn btn-success btn-block btn-lg mainButtons" id="3Button">Completed  <span class="badge" id="completednum">0</span></button>
+     <button type="button" class="btn btn-warning btn-block btn-lg mainButtons" id="4Button">Archived  <span class="badge" id="archivednum">0</span></button>
+  </div>
+ 
+    <!--4 Tables-->
+  <div class="col-md-9" id="mainSection">
+ 
+  <h2 style="text-align: center;" id="tableHeader"><b>All Tasks</b></h2>
+      <div id="table1">
+  <table class="table table-hover" id="allTasksTable">
+     <thead>
+        <tr>
+        <th>Task</th>
+        <th>Due</th>
+        <th></th>
+     </tr>
+     </thead>
+     <tbody id="firstTbody">
+ 
+    </tbody>
+    </table>
+          </div>
+ 
+      <div id="table2">
+    <table class="table table-hover" id="inProgTable">
+     <thead>
+        <tr>
+        <th>Task</th>
+        <th>Due</th>
+        <th></th>
+     </tr>
+     </thead>
+     <tbody>
+ 
+    </tbody>
+    </table>
+          </div>
+ 
+      <div id="table3">
+    <table class="table table-hover" id="completedTable">
+     <thead>
+        <tr>
+        <th>Task</th>
+        <th>Due</th>
+        <th></th>
+     </tr>
+     </thead>
+     <tbody>
+ 
+    </tbody>
+    </table>
+          </div>
+ 
+      <div id="table4">
+    <table class="table table-hover" id="archivedTable">
+     <thead>
+        <tr>
+        <th>Task</th>
+        <th>Due</th>
+        <th></th>
+     </tr>
+     </thead>
+     <tbody>
+ 
+    </tbody>
+    </table>
+          </div>
+ 
+     <!--Input-->
+      <div id="input">
+    <button type="button" class="btn btn-success" id="add_btn">Add Task <span class="glyphicon glyphicon-plus-sign"></span></button>
+    <button type="button" class="btn btn-danger" id="delSelected">Delete Selected Task(s) <span class="glyphicon glyphicon-trash"></span></button>
+    <div id="add_div">
+        <br>
+        <input type="text" class="form-control" placeholder="Task name..." id="task_name">
+        <input type="text" class="form-control" placeholder="Due Date" id="datepicker">
+        <input type="text" class="form-control" placeholder="Optional task description." id="task_desc">
+        <br>
+        <button type="button" class="btn btn-success" id="final_add">Add</button>
+        <button type="button" class="btn btn-danger" id="cancel_btn">Cancel</button>
+    </div>    
+    <br>
+ 
+  <!--Alert-->
+    <div class="alert alert-success fade in" id="alert">
+        <a href="#"class="close" aria-label="close" id="closeX">&times;</a>
+    <b>Task Added.</b>
+    </div>
+    <div class="alert alert-danger fade in" id="alertFail">
+        <a href="#"class="close" aria-label="close" id="closeXdanger">&times;</a>
+    <b>You must enter a task.</b>
+    </div>
+         </div>
+ 
+  </div>
+ 
+</div>
+ 
+    <!--Dialogue boxes-->
+    <div id="dialog" title="Edit Task">
+        <input type="text" class="form-control" placeholder="Task name..." id="task_nameEdit">
+        <input type="text" class="form-control" placeholder="Due Date" id="datepickerEdit">
+        <input type="text" class="form-control" placeholder="Optional task description." id="task_descEdit">
+        <br>
+        <button type="button" class="btn btn-success" id="final_addEdit">Edit</button>
+        <button type="button" class="btn btn-danger" id="cancel_btnEdit">Cancel</button>
+    </div>
+    <div id="confirmDelete" title="Delete">
+        <p style="color: #f00"><b>Are you sure you want to delete ?</b></p>
+        <br>
+        <button type="button" class="btn btn-success" id="final_addDel">Confirm</button>
+        <button type="button" class="btn btn-danger" id="cancel_btnDel">Cancel</button>
+    </div>
+ 
+<script>
+    $(function () {
+        //Date picker and data table
+        $("#datepicker").datepicker();
+        $("#datepickerEdit").datepicker();
+        var table = $('#allTasksTable').DataTable();
+        var table2 = $('#inProgTable').DataTable();
+        var table3 = $('#completedTable').DataTable();
+        var table4 = $('#archivedTable').DataTable();
+        $('#table2').hide();
+        $('#table3').hide();
+        $('#table4').hide();
+
+        //Dialogue
+        $("#dialog").dialog({ modal: true });
+        $("#dialog").dialog('close');
+        $("#confirmDelete").dialog({ modal: true });
+        $("#confirmDelete").dialog('close');
+        var lastClickedEdit;
+
+        //initially hidden elements
+        $("#add_div").hide();
+        $("#alert").hide();
+        $("#alertFail").hide();
+        $('#delSelected').hide();
+
+        function hideAll() {
+            $('#table1').hide();
+            $('#table2').hide();
+            $('#table3').hide();
+            $('#table4').hide();
+
+            if ($('#1Button').hasClass('active')) $('#1Button').removeClass('active');
+            else if ($('#2Button').hasClass('active')) $('#2Button').removeClass('active');
+            else if ($('#3Button').hasClass('active')) $('#3Button').removeClass('active');
+            else $('#4Button').removeClass('active');
+        };
+        $("button").click(function () {
+            if ($(this).hasClass('mainButtons')) {
+                hideAll();
+                $(this).addClass('active');
+
+                var id = this.id;
+                if (id == "4Button") {
+                    table4.clear();
+                    var allTasksTrs = $('#allTasksTable tbody').find('tr');
+                    for (var i = 0; i < allTasksTrs.length; i++) {
+                        if ($(allTasksTrs[i]).hasClass('arch')) {
+                            var data = table.row(allTasksTrs[i]).data();
+                            table4.row.add(data);
+                        }
+                    }
+                    table4.draw();
+                    $('#archivedTable').find('button').attr('disabled', "disabled");
+
+                    $('#input').hide();
+                    $('#table4').show();
+                    var bold = '<b>Archived</b>';
+                    $("#tableHeader").text("");
+                    $("#tableHeader").append(bold);
+                }
+                else if (id == "1Button") {
+                    $('#table1').show();
+                    $('#input').show();
+                    var bold = '<b>All Tasks</b>';
+                    $("#tableHeader").text("");
+                    $("#tableHeader").append(bold);
+                }
+                else if (id == "2Button") {
+                    table2.clear();
+                    var allTasksTrs = $('#allTasksTable tbody').find('tr');
+                    for (var i = 0; i < allTasksTrs.length; i++) {
+                        if ($(allTasksTrs[i]).hasClass('inprog')) {
+                            var data = table.row(allTasksTrs[i]).data();
+                            table2.row.add(data);
+                        }
+                    }
+                    table2.draw();
+                    $('#inProgTable').find('button').attr('disabled', "disabled");
+
+                    $('#input').hide();
+                    $('#table2').show();
+                    var bold = '<b>In Progress</b>';
+                    $("#tableHeader").text("");
+                    $("#tableHeader").append(bold);
+                }
+                else {
+                    table3.clear();
+                    var allTasksTrs = $('#allTasksTable tbody').find('tr');
+                    for (var i = 0; i < allTasksTrs.length; i++) {
+                        if ($(allTasksTrs[i]).hasClass('compl')) {
+                            var data = table.row(allTasksTrs[i]).data();
+                            var giveMeClass = table3.row.add(data).node();
+                            $(giveMeClass).addClass('compl');
+                        }
+                    }
+                    table3.draw();
+                    $('#completedTable').find('button').attr('disabled', "disabled");
+
+                    $('#input').hide();
+                    $('#table3').show();
+                    var bold = '<b>Completed</b>';
+                    $("#tableHeader").text("");
+                    $("#tableHeader").append(bold);
+                }
+            }
+        });
+
+        //Adding
+        $("#add_btn").click(function () {
+            $("#add_div").toggle("slow");
+        });
+        $("#cancel_btn").click(function () {
+            $("#task_name").val("");
+            $("#datepicker").val("");
+            $("#add_div").hide();
+        });
+
+        $("#final_add").click(function () {
+            var taskName = document.getElementById("task_name").value;
+            if (taskName == "") {
+                $("#alertFail").show("slow");
+                return;
+            }
+            var date = document.getElementById("datepicker").value;
+
+            //tooltip
+            var aTag = document.createElement("a");
+            aTag.innerHTML = taskName;
+            var desc = "Task Descreption: ";
+            desc += document.getElementById("task_desc").value;
+            $(aTag).attr('title', desc);
+            $(aTag).attr('data-toggle', 'tooltip');
+            $(aTag).attr('data-placement', 'auto');
+
+            var container = document.createElement("div");
+            $(container).append(aTag);
+
+            var button = '<div class="dropdown"><button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">';
+            button += '<span class="caret"></span></button>';
+            button += '<ul class="dropdown-menu"><li><a href="#" class="archive">Archive</a></li><li><a href="#" class="editTask">Edit task</a></li><li><a href="#" class="markAsDone">Mark as done</a></li></ul></div>'
+
+            var containerOptions = document.createElement("div");
+            $(containerOptions).append(button);
+
+            var giveMeClass = table.row.add([container.innerHTML, date, containerOptions.innerHTML]).node();
+            $(giveMeClass).addClass('inprog');
+            table.draw();
+            $('[data-toggle="tooltip"]').tooltip();
+
+            //number of tasks
+            var oldNum = document.getElementById("alltasksnum");
+            var newNum = oldNum.innerHTML;
+            newNum++;
+            oldNum.innerHTML = newNum;
+            oldNum = document.getElementById("inprogressnum");
+            newNum = oldNum.innerHTML;
+            newNum++;
+            oldNum.innerHTML = newNum;
+
+            $('#task_name').val("");
+            $('#datepicker').val("");
+            $('#task_desc').val("");
+
+            $("#alert").show("slow");
+
+            //Update the server.
+            sendTbody();
+        });
+
+        //Data table deleting
+        $('#delSelected').click(function () {
+            $("#confirmDelete").dialog('open');
+        });
+        $('#cancel_btnDel').click(function () {
+            $("#confirmDelete").dialog('close');
+        });
+
+        $('#final_addDel').click(function () {
+            var toBDeleted = $('.selected').length;
+            for (var i = 0; i < toBDeleted; i++) {
+                table.row('.selected').remove().draw(false);
+            }
+            $('#delSelected').hide();
+
+            if (toBDeleted > 0) {
+                var oldNum = document.getElementById("alltasksnum");
+                var newNum = oldNum.innerHTML;
+                newNum -= toBDeleted;
+                oldNum.innerHTML = newNum;
+            }
+            renewTables();
+            $("#confirmDelete").dialog('close');
+
+            //Update the server.
+            sendTbody();
+        });
+        $('#allTasksTable tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            }
+            else {
+                $(this).addClass('selected');
+            }
+
+            if ($('.selected').length == 0) {
+                $('#delSelected').hide();
+            }
+            else {
+                $('#delSelected').show();
+            }
+
+            //Update the server.
+            sendTbody();
+        });
+        function renewTables() {
+            var inProgs = 0;
+            var completeds = 0;
+            var archiveds = 0;
+
+            var allTasksTrs = $('#allTasksTable tbody').find('tr');
+            for (var i = 0; i < allTasksTrs.length; i++) {
+                if ($(allTasksTrs[i]).hasClass('arch')) {
+                    archiveds++;
+                }
+                else if ($(allTasksTrs[i]).hasClass('compl')) {
+                    completeds++;
+                }
+                else if ($(allTasksTrs[i]).hasClass('inprog')) {
+                    inProgs++;
+                }
+            }
+
+            var oldNum = document.getElementById("inprogressnum");
+            var newNum = oldNum.innerHTML;
+            newNum = inProgs;
+            oldNum.innerHTML = newNum;
+
+            oldNum = document.getElementById("completednum");
+            newNum = oldNum.innerHTML;
+            newNum = completeds;
+            oldNum.innerHTML = newNum;
+
+            oldNum = document.getElementById("archivednum");
+            newNum = oldNum.innerHTML;
+            newNum = archiveds;
+            oldNum.innerHTML = newNum;
+        }
+
+        //Operations on tasks
+        $(document).on('click', 'a', function () {
+            //Putting in Archived
+            if ($(this).hasClass('archive')) {
+                var row = $(this).closest('tr');
+
+                if ($(row).hasClass('inprog')) {
+                    $(row).removeClass('inprog');
+                    var oldNum = document.getElementById("inprogressnum");
+                    var newNum = oldNum.innerHTML;
+                    newNum--;
+                    oldNum.innerHTML = newNum;
+                }
+                else if ($(row).hasClass('compl')) {
+                    $(row).removeClass('compl');
+                    var oldNum = document.getElementById("completednum");
+                    var newNum = oldNum.innerHTML;
+                    newNum--;
+                    oldNum.innerHTML = newNum;
+                }
+                else return;
+
+                $(row).addClass('arch');
+
+                var oldNum = document.getElementById("archivednum");
+                var newNum = oldNum.innerHTML;
+                newNum++;
+                oldNum.innerHTML = newNum;
+            }
+            //Putting in Completed
+            else if ($(this).hasClass('markAsDone')) {
+                var row = $(this).closest('tr');
+
+                if ($(row).hasClass('inprog')) {
+                    $(row).removeClass('inprog');
+                    var oldNum = document.getElementById("inprogressnum");
+                    var newNum = oldNum.innerHTML;
+                    newNum--;
+                    oldNum.innerHTML = newNum;
+                }
+                else if ($(row).hasClass('arch')) {
+                    $(row).removeClass('arch');
+                    var oldNum = document.getElementById("archivednum");
+                    var newNum = oldNum.innerHTML;
+                    newNum--;
+                    oldNum.innerHTML = newNum;
+                }
+                else return;
+
+                $(row).addClass('compl');
+
+                var oldNum = document.getElementById("completednum");
+                var newNum = oldNum.innerHTML;
+                newNum++;
+                oldNum.innerHTML = newNum;
+            }
+            else if ($(this).hasClass('editTask')) {
+                lastClickedEdit = $(this);
+                $("#task_nameEdit").val($(this).closest('tr').find('a')[0].innerHTML);
+                $("#datepickerEdit").val($(this).closest('tr').find('td')[1].innerHTML);
+                $("#task_descEdit").val($($(this).closest('tr').find('a')[0]).attr('title').substring(18));
+                $("#dialog").dialog('open');
+            }
+
+            //Update the server.
+            sendTbody();
+        });
+
+        //Dialogue edit and cancel
+        $("#final_addEdit").click(function () {
+            var taskName = document.getElementById("task_nameEdit").value;
+            if (taskName == "") {
+                $("#task_nameEdit").val("");
+                $("#datepickerEdit").val("");
+                $("#task_descEdit").val("");
+                $("#dialog").dialog('close');
+                $("#alertFail").show("slow");
+                return;
+            }
+            var date = document.getElementById("datepickerEdit").value;
+            var desc = "Task Descreption: ";
+            desc += document.getElementById("task_descEdit").value;
+
+            var tr = lastClickedEdit.closest('tr');
+            //Getting the previous class of row
+            var trClass;
+            if ($(tr).hasClass('arch')) trClass = 'arch';
+            else if ($(tr).hasClass('compl')) trClass = 'compl';
+            else trClass = 'inprog';
+
+            table.row(tr).remove();
+
+            var aTag = document.createElement("a");
+            aTag.innerHTML = taskName;
+            $(aTag).attr('title', desc);
+            $(aTag).attr('data-toggle', 'tooltip');
+            $(aTag).attr('data-placement', 'auto');
+            var container = document.createElement("div");
+            $(container).append(aTag);
+
+            var button = '<div class="dropdown"><button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">';
+            button += '<span class="caret"></span></button>';
+            button += '<ul class="dropdown-menu"><li><a href="#" class="archive">Archive</a></li><li><a href="#" class="editTask">Edit task</a></li><li><a href="#" class="markAsDone">Mark as done</a></li></ul></div>'
+
+            var containerOptions = document.createElement("div");
+            $(containerOptions).append(button);
+
+            var giveMeClass = table.row.add([container.innerHTML, date, containerOptions.innerHTML]).node();
+            $(giveMeClass).addClass(trClass);
+            table.draw();
+
+            $("#task_nameEdit").val("");
+            $("#datepickerEdit").val("");
+            $("#task_descEdit").val("");
+            $("#dialog").dialog('close');
+
+            //Update the server.
+            sendTbody();
+        });
+        $("#cancel_btnEdit").click(function () {
+            $("#task_nameEdit").val("");
+            $("#datepickerEdit").val("");
+            $("#task_descEdit").val("");
+            $("#dialog").dialog('close');
+        });
+
+        //alert hide
+        $("#closeX").click(function () {
+            $("#alert").hide("slow");
+        });
+        $("#closeXdanger").click(function () {
+            $("#alertFail").hide("slow");
+        });
+
+        //Phase 2
+        //On log out
+        $("#logO").click(function(){
+            document.getElementById('logoutForm').submit();
+        });
+
+        function sendTbody(){
+            var tbody = $('#allTasksTable > tbody').prop('outerHTML');
+            $.ajax({
+                type: "POST",
+                url: '/updateTasks',
+                data: {data: tbody},
+                success: function(result) {}
+            });
+        }
+
+        //Ajax request tbody
+        $.ajax({
+            url: '/sendMyTasks',
+            complete: function(data) {
+                var str = JSON.parse(data.responseText).toString();
+
+                str = str.replace(/\\n/g, '');
+                str = str.replace(/\\/g, '');
+
+                if(str == '<tbody id="firstTbody">     <tr class="odd"><td valign="top" colspan="3" class="dataTables_empty">No data available in table</td></tr></tbody>') return;
+
+                var obj = $(str);
+                var rows = $(obj).find('tr');
+                var numOfCompl=0;
+                var numOfInProg=0;
+                var numOfArchived=0;
+                for(var i=0;i<rows.length;i++){
+                    table.row.add(rows[i]);
+                    if($(rows[i]).hasClass('inprog')) numOfInProg++;
+                    else if($(rows[i]).hasClass('compl')) numOfCompl++;
+                    else numOfArchived++;
+                }
+                document.getElementById("alltasksnum").innerHTML=rows.length;
+                document.getElementById("inprogressnum").innerHTML=numOfInProg;
+                document.getElementById("completednum").innerHTML=numOfCompl;
+                document.getElementById("archivednum").innerHTML=numOfArchived;
+                table.draw();
+
+                //Show the delete button if there were selected rows on server start.
+                if($('.selected').length > 0) $('#delSelected').show();
+            }
+        });
+        //Ajax request name
+        $.ajax({
+            url: '/sendMyName',
+            complete: function(data) {
+                document.getElementById('nameOfUser').text = "Logged in as "+ data.responseText.substring(1,data.responseText.length-1);
+            }
+        });
+    });
+  </script>
+</body>
+</html>
